@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Translator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background-color: #343a40; /* Hitam abu-abu */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            color: #f8f9fa !important; /* Warna teks terang */
+            font-weight: bold;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.75) !important; /* Teks abu-abu terang */
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #ffffff !important; /* Warna teks saat hover */
+        }
+
+        .translator-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .nav-tabs {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-tabs .nav-link {
+            color: #495057;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        #result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative; /* Add this to ensure positioning works */
+        }
+
+        #translated-text {
+            font-style: italic;
+            color: #6c757d;
+            margin: 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .form-select, .form-control {
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus, .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        #translateBtn {
+            background-color: #007bff;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        #translateBtn:hover {
+            background-color: #0056b3;
+        }
+
+        .file-drop-zone {
+            border: 2px dashed #ced4da;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .file-drop-zone:hover {
+            background-color: #f1f3f5;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 15px;
+            color: #6c757d;
+        }
+
+        /* Add styles for copy icon */
+        .copy-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+              <img src="public/logoai.png" alt="AI Translator Logo" style="height: 20px; width: auto;">  AI Translator
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="fas fa-home me-2"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="ContactUs.html"><i class="fas fa-envelope me-2"></i>Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="translator-container">
+            <ul class="nav nav-tabs" id="translatorTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="translate-text-tab" data-bs-toggle="tab" data-bs-target="#translate-text" type="button" role="tab">
+                        <i class="fas fa-keyboard me-2"></i>Translate Text
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="translate-file-tab" data-bs-toggle="tab" data-bs-target="#translate-file" type="button" role="tab">
+                        <i class="fas fa-file-upload me-2"></i>Translate File
+                    </button>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="translate-text" role="tabpanel">
+                    <form id="translator-form">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="sourceLanguage" class="form-label">Source Language</label>
+                                    <select id="sourceLanguage" name="sourceLanguage" class="form-select">
+                                        <option value="en">English</option>
+                                        <option value="id">Indonesian</option>
+                                        <option value="fr">French</option>
+                                        <option value="es">Spanish</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="textInput" class="form-label">Text to Translate</label>
+                                    <textarea id="textInput" name="inputText" class="form-control" rows="6" placeholder="Enter text here..."></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="targetLanguage" class="form-label">Target Language</label>
+                                    <select id="targetLanguage" name="targetLanguage" class="form-select">
+                                        <option value="en">English</option>
+                                        <option value="id">Indonesian</option>
+                                        <option value="fr">French</option>
+                                        <option value="es">Spanish</option>
+                                    </select>
+                                </div>
+                                <div id="result" class="p-3">
+                                    <i class="fas fa-copy copy-icon" id="copyIcon"></i>
+                                    <h5 class="form-label">Translation Result</h5>
+                                    <p id="translated-text">Translation will appear here...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary w-100 mt-3" id="translateBtn">
+                            <i class="fas fa-language me-2"></i>Translate
+                        </button>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="translate-file" role="tabpanel">
+                    <div class="file-drop-zone">
+                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                        <h5>Upload File for Translation</h5>
+                        <p class="text-muted">Drag and drop PDF, DOCX, or TXT files here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center">
+        <p>&copy; 2024 AI Translator. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+    <script>
+        document.getElementById('translateBtn').addEventListener('click', async function () {
+    const textInput = document.getElementById('textInput').value;
+    const sourceLanguage = document.getElementById('sourceLanguage').value;
+    const targetLanguage = document.getElementById('targetLanguage').value;
+
+    if (textInput.trim() === '') {
+        alert('Please enter text to translate!');
+        return;
+    }
+
+    try {
+        // Construct the URL with query parameters
+        const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textInput)}&langpair=${sourceLanguage}|${targetLanguage}`;
+
+        // Send a GET request with query parameters
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        // Display the translated text
+        const translatedText = data.responseData.translatedText;
+        document.getElementById('translated-text').textContent = translatedText;
+    } catch (error) {
+        console.error('Translation error:', error);
+    }
+});
+
+
+        // Copy the translation to clipboard
+        document.getElementById('copyIcon').addEventListener('click', function () {
+            const translatedText = document.getElementById('translated-text').textContent;
+            navigator.clipboard.writeText(translatedText).then(function () {
+                alert('Copied to clipboard!');
+            }).catch(function (err) {
+                console.error('Error copying text: ', err);
+            });
+        });
+    </script>
+</body>
+</html>
