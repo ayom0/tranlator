@@ -1,268 +1,412 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Translator</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>AI Asisten Belajar</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+
+         /* Navbar Styling */
+         /* Navbar Styling */
+.navbar {
+    background-color: #202123;
+    padding: 10px;
+}
+
+.navbar-brand {
+    font-size: 2.0rem; /* Ukuran teks navbar */
+    color: white;
+    text-align: center;
+    width: 100%;
+    display: flex; /* Menyusun logo dan teks secara horizontal */
+    align-items: center; /* Menyusun logo dan teks secara vertikal di tengah */
+}
+
+.navbar-brand img {
+    width: 100px; /* Ukuran logo */
+    height: auto;
+    border-radius: 5px; /* Border radius pada logo */
+    margin-right: 10px; /* Jarak antara logo dan teks */
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+
+#refresh-button, #upload-button {
+    background: transparent;
+    border: none;
+    color: white;
+}
+
+#refresh-button:hover, #upload-button:hover {
+    background: rgba(0, 0, 0, 0.1); /* Menambahkan sedikit efek hover */
+}
+
         body {
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-        }
+    background-color: #343541;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    justify-content: center; /* Menyusun konten secara horizontal di tengah */
+    align-items: center; /* Menyusun konten secara vertikal di tengah */
+    display: block; /* Ubah dari flex menjadi block */
+}
 
-        .navbar {
-            background-color: #343a40; /* Hitam abu-abu */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+.chat-container {
+    width: 100%;
+    max-width: 800px;
+    height: 80vh; /* Sesuaikan tinggi dengan ukuran layar */
+    background: #444654;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    margin: 20px auto; /* Menambahkan margin otomatis di kiri dan kanan */
+}
 
-        .navbar-brand {
-            color: #f8f9fa !important; /* Warna teks terang */
-            font-weight: bold;
-        }
 
-        .navbar-toggler-icon {
-            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-        }
-
-        .navbar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.75) !important; /* Teks abu-abu terang */
-            transition: color 0.3s ease;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: #ffffff !important; /* Warna teks saat hover */
-        }
-
-        .translator-container {
-            max-width: 1200px;
-            margin: 50px auto;
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #e0e0e0;
-        }
-
-        .nav-tabs {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .nav-tabs .nav-link {
-            color: #495057;
-            transition: all 0.3s ease;
-        }
-
-        .nav-tabs .nav-link.active {
-            background-color: #007bff;
+        .chat-header {
+            background: #202123;
             color: white;
-            border-color: #007bff;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
         }
 
-        .tab-content {
-            padding: 20px;
+        .chat-box {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            background: #343541;
+            color: white;
         }
 
-        #result {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            min-height: 200px;
+        .chat-message {
+            margin-bottom: 10px;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative; /* Add this to ensure positioning works */
+            align-items: center;
         }
 
-        #translated-text {
-            font-style: italic;
-            color: #6c757d;
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+        .chat-message.ai {
+            justify-content: flex-start;
+        }
+
+        .chat-message p {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 10px;
             margin: 0;
         }
 
-        .form-label {
-            font-weight: 600;
-            color: #212529;
+        .chat-message.user p {
+            background: #007bff;
+            color: white;
+            border-radius: 10px 10px 0 10px;
         }
 
-        .form-select, .form-control {
-            transition: all 0.3s ease;
+        .chat-message.ai p {
+            background: #4a4c5a;
+            color: white;
+            border-radius: 10px 10px 10px 0;
         }
 
-        .form-select:focus, .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        .chat-input {
+            padding: 10px;
+            background: #202123;
+            border-top: 1px solid #3e3f4b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        #translateBtn {
+        .chat-input input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #3e3f4b;
+            color: white;
+        }
+
+        .chat-input .dropdown {
+            position: relative;
+        }
+
+        .chat-input .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #444654;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .chat-input .dropdown-item {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    color: white;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    width: 100%; /* Membuat tombol mengisi lebar penuh */
+}
+
+        .chat-input button {
+            padding: 10px 15px;
             background-color: #007bff;
             border: none;
-            padding: 12px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        #translateBtn:hover {
+        .chat-input button:hover {
             background-color: #0056b3;
         }
 
-        .file-drop-zone {
-            border: 2px dashed #ced4da;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
+        .icon-button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Membuat ukuran tombol seragam */
+}
 
-        .file-drop-zone:hover {
-            background-color: #f1f3f5;
-        }
+.icon-button:hover {
+    background-color: #333;
+    border-radius: 5px;
+}
 
-        footer {
-            background-color: #f8f9fa;
-            padding: 15px;
-            color: #6c757d;
-        }
+.dropdown-menu {
+    background-color: #444654;
+    border: none;
+    padding: 8px; /* Menambahkan padding agar lebih rapi */ /* Mengatur lebar dropdown menu */
+    max-height: 200px; /* Menentukan ketinggian maksimal */
+    overflow-y: auto; /* Membuat scroll jika konten lebih tinggi dari max-height */
+    font-size: 14px; /* Menentukan ukuran teks dalam dropdown */
+}
 
-        /* Add styles for copy icon */
-        .copy-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+
+        .dropdown-item {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            color: white;
             cursor: pointer;
         }
+
+        .dropdown-item:hover {
+            background-color: #333;
+        }
+
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-              <img src="public/logoai.png" alt="AI Translator Logo" style="height: 20px; width: auto;">  AI Translator
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html"><i class="fas fa-home me-2"></i>Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="ContactUs.html"><i class="fas fa-envelope me-2"></i>Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <div class="container-fluid">
-        <div class="translator-container">
-            <ul class="nav nav-tabs" id="translatorTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="translate-text-tab" data-bs-toggle="tab" data-bs-target="#translate-text" type="button" role="tab">
-                        <i class="fas fa-keyboard me-2"></i>Translate Text
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="translate-file-tab" data-bs-toggle="tab" data-bs-target="#translate-file" type="button" role="tab">
-                        <i class="fas fa-file-upload me-2"></i>Translate File
-                    </button>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="translate-text" role="tabpanel">
-                    <form id="translator-form">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="sourceLanguage" class="form-label">Source Language</label>
-                                    <select id="sourceLanguage" name="sourceLanguage" class="form-select">
-                                        <option value="en">English</option>
-                                        <option value="id">Indonesian</option>
-                                        <option value="fr">French</option>
-                                        <option value="es">Spanish</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="textInput" class="form-label">Text to Translate</label>
-                                    <textarea id="textInput" name="inputText" class="form-control" rows="6" placeholder="Enter text here..."></textarea>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="targetLanguage" class="form-label">Target Language</label>
-                                    <select id="targetLanguage" name="targetLanguage" class="form-select">
-                                        <option value="en">English</option>
-                                        <option value="id">Indonesian</option>
-                                        <option value="fr">French</option>
-                                        <option value="es">Spanish</option>
-                                    </select>
-                                </div>
-                                <div id="result" class="p-3">
-                                    <i class="fas fa-copy copy-icon" id="copyIcon"></i>
-                                    <h5 class="form-label">Translation Result</h5>
-                                    <p id="translated-text">Translation will appear here...</p>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="btn btn-primary w-100 mt-3" id="translateBtn">
-                            <i class="fas fa-language me-2"></i>Translate
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">
+            <img src="public/WhatsApp Image 2024-12-05 at 11.40.41_d655f713.jpg" alt="Logo" style="width: 30px; margin-right: 10px;">
+            Classbot
+        </a>
+    </nav>
+    
+
+    <div class="chat-container">
+        <div class="chat-header">Ada yang bisa saya bantu?</div>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Tanya sesuatu..." autocomplete="off">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    •••
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    
+                    <li>
+                        <button class="dropdown-item" id="upload-button" class="icon-button">
+                            <i class="far fa-file"></i> 
                         </button>
-                    </form>
-                </div>
-                <div class="tab-pane fade" id="translate-file" role="tabpanel">
-                    <div class="file-drop-zone">
-                        <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                        <h5>Upload File for Translation</h5>
-                        <p class="text-muted">Drag and drop PDF, DOCX, or TXT files here</p>
-                    </div>
-                </div>
+                        <!-- Input file yang tersembunyi -->
+                        <input type="file" id="file-upload" class="file-upload-input" style="display:none;" accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                    </li>
+                        <button class="dropdown-item" id="refresh-button" class="icon-button">
+                            <i class="fa-solid fa-sync"></i>
+                        </button>
+                    </li>
+                </ul>             
             </div>
+            <input type="file" id="file-upload" style="display: none;" accept="image/*,.pdf,.doc,.docx">
+            <button id="send-button"><i class="fa-solid fa-microphone"></i></button>
         </div>
     </div>
 
-    <footer class="text-center">
-        <p>&copy; 2024 AI Translator. All rights reserved.</p>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-    <script>
-        document.getElementById('translateBtn').addEventListener('click', async function () {
-    const textInput = document.getElementById('textInput').value;
-    const sourceLanguage = document.getElementById('sourceLanguage').value;
-    const targetLanguage = document.getElementById('targetLanguage').value;
-
-    if (textInput.trim() === '') {
-        alert('Please enter text to translate!');
-        return;
-    }
-
-    try {
-        // Construct the URL with query parameters
-        const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textInput)}&langpair=${sourceLanguage}|${targetLanguage}`;
-
-        // Send a GET request with query parameters
-        const response = await fetch(apiUrl);
-        const data = await response.json();
+    <script type="module">
+        import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
         
-        // Display the translated text
-        const translatedText = data.responseData.translatedText;
-        document.getElementById('translated-text').textContent = translatedText;
-    } catch (error) {
-        console.error('Translation error:', error);
-    }
-});
-
-
-        // Copy the translation to clipboard
-        document.getElementById('copyIcon').addEventListener('click', function () {
-            const translatedText = document.getElementById('translated-text').textContent;
-            navigator.clipboard.writeText(translatedText).then(function () {
-                alert('Copied to clipboard!');
-            }).catch(function (err) {
-                console.error('Error copying text: ', err);
-            });
+        const chatBox = document.getElementById("chat-box");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
+        const refreshButton = document.getElementById("refresh-button");
+        const fileUpload = document.getElementById("file-upload");
+        const chatHeader = document.querySelector(".chat-header");
+        
+        const API_KEY = 'Your_Api_key'; // Ganti dengan API Key Gemini
+        let lastAnswer = null;
+        
+        sendButton.addEventListener("click", sendMessage);
+        userInput.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                sendMessage();
+            }
         });
+        refreshButton.addEventListener("click", refreshAnswer);
+        fileUpload.addEventListener("change", handleFileUpload);
+        
+        // Tambahkan event listener untuk perubahan input
+        userInput.addEventListener("input", updateSendButtonIcon);
+        
+        // Fungsi untuk memperbarui ikon tombol send
+        function updateSendButtonIcon() {
+            const message = userInput.value.trim();
+            const icon = message ? 'fa-arrow-right' : 'fa-microphone';
+            sendButton.innerHTML = `<i class="fa-solid ${icon}"></i>`; // Ganti ikon tombol
+        }
+        
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            const file = fileUpload.files[0];
+        
+            if (!message && !file) {
+                alert("Masukkan pesan atau unggah file terlebih dahulu.");
+                return;
+            }
+        
+            // Mengubah teks header saat pesan diproses
+            updateChatHeader("Menyiapkan jawaban Anda...");
+            
+            appendMessage("user", message || `File "${file.name}" diunggah.`);
+            userInput.value = "";
+            fileUpload.value = "";
+        
+            try {
+                const context = lastAnswer ? `Jawaban sebelumnya adalah \"${lastAnswer}\". ` : "";
+                const query = `${context}${message}`;
+        
+                const contents = [{ role: 'user', parts: [{ text: query }] }];
+        
+                if (file) {
+                    // Mengubah teks header saat file diproses
+                    updateChatHeader("Memproses file Anda...");
+                    const fileContent = await readFileContent(file);
+                    contents.push({ role: 'user', parts: [{ text: `Konten file yang diunggah: ${fileContent}` }] });
+                }
+        
+                const genAI = new GoogleGenerativeAI(API_KEY);
+                const model = genAI.getGenerativeModel({
+                    model: "gemini-1.5-flash",
+                    safetySettings: [
+                        {
+                            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                            threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH,
+                        },
+                    ],
+                });
+        
+                const result = await model.generateContentStream({ contents });
+                let buffer = [];
+                for await (let response of result.stream) {
+                    buffer.push(response.text());
+                }
+                const answer = buffer.join('');
+                lastAnswer = answer;
+        
+                appendMessage("ai", formatBoldText(answer || "Jawaban tidak tersedia. Coba lagi nanti."));
+        
+                // Mengubah teks header kembali setelah jawaban diterima
+                updateChatHeader("Ada yang bisa saya bantu?");
+            } catch (error) {
+                console.error("Error sending message:", error);
+                appendMessage("ai", "Terjadi kesalahan saat mengirim pesan.");
+                
+                // Mengubah teks header kembali setelah kesalahan
+                updateChatHeader("Ada yang bisa saya bantu?");
+            }
+        }
+        
+        function updateChatHeader(text) {
+            chatHeader.textContent = text; // Update teks header
+        }
+        
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("chat-message", sender);
+            messageElement.innerHTML = `<p>${message}</p>`;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        function formatBoldText(text) {
+            return text.replace(/(\*\*|__)(.*?)\1/g, "<strong>$2</strong>");
+        }
+
+        
+        
+        function handleFileUpload() {
+            const file = fileUpload.files[0];
+            if (file) {
+                appendMessage("user", `File "${file.name}" diunggah.`);
+                
+                // Menangani file berdasarkan jenisnya
+                if (file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const img = `<img src="${e.target.result}" alt="Uploaded Image" style="max-width: 100%; border-radius: 8px;"/>`;
+                        appendMessage("user", img);
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.type === "application/pdf") {
+                    appendMessage("user", `File PDF "${file.name}" diunggah.`);
+                } else if (file.type === "application/msword" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+                    appendMessage("user", `File Word "${file.name}" diunggah.`);
+                } else if (file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+                    appendMessage("user", `File Excel "${file.name}" diunggah.`);
+                }
+            }
+        }
+        
+        function refreshAnswer() {
+            lastAnswer = null;
+            appendMessage("ai", "Jawaban telah di-refresh.");
+        }
     </script>
+    
+    
+    <script src="main.js"></script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
