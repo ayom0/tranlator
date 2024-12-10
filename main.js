@@ -22,6 +22,14 @@ fileUpload.addEventListener("change", handleFileUpload);
 // Tambahkan event listener untuk perubahan input
 userInput.addEventListener("input", updateSendButtonIcon);
 
+// Function to get a new, improved response from the AI (placeholder)
+function getNewResponse(lastUserMessage) {
+    // In a real application, this would call your AI model to get a new,
+    // improved response based on the last user message.
+    // For now, we just return a hardcoded string:
+    return "This is an improved response.";
+}
+
 // Fungsi untuk memperbarui ikon tombol send
 function updateSendButtonIcon() {
     const message = userInput.value.trim();
@@ -96,7 +104,8 @@ function updateChatHeader(text) {
 
 function appendMessage(sender, message) {
     const messageElement = document.createElement("div");
-    messageElement.classList.add("chat-message", sender);
+    const messageId = `message-${Date.now()}`; // Generate unique ID
+    messageElement.classList.add("chat-message", sender, messageId);
     messageElement.innerHTML = `<p>${message}</p>`;
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight;
@@ -104,6 +113,17 @@ function appendMessage(sender, message) {
 
 function formatBoldText(text) {
     return text.replace(/(\*\*|__)(.*?)\1/g, "<strong>$2</strong>");
+}
+
+// Fungsi untuk menangani pengiriman file
+function handleFileSend(file) {
+    if (file) {
+        console.log("File Name:", file.name);
+        console.log("File Type:", file.type);
+        // Tambahkan logika untuk mengirim file ke server di sini
+    } else {
+        alert("Pilih file terlebih dahulu.");
+    }
 }
 
 
@@ -132,6 +152,17 @@ function handleFileUpload() {
 }
 
 function refreshAnswer() {
-    lastAnswer = null;
-    appendMessage("ai", "Jawaban telah di-refresh.");
+    // Find the last AI message element
+    const lastAiMessage = chatBox.querySelector(".ai:last-of-type");
+
+    if (lastAiMessage) {
+        // Get the last user message (for context)
+        const lastUserMessage = chatBox.querySelector(".user:last-of-type p").textContent;
+
+        // Get the new, improved response
+        const newResponse = getNewResponse(lastUserMessage);
+
+        // Update the last AI message with the new response
+        lastAiMessage.querySelector("p").textContent = newResponse; 
+    }
 }
